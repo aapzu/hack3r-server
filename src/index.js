@@ -44,11 +44,15 @@ app.all('/', (req, res) => {
   res.send(200)
 })
 
-Object.entries(payloadObj).forEach(([key, value]) => {
-  app.get(`/${key}`, (req, res) => {
-    res.sendFile(value)
+if (payloadObj) {
+  Object.entries(payloadObj).forEach(([key, value]) => {
+    app.get(`/${key}`, (req, res) => {
+      console.log(`\n${new Date().toLocaleString()} – ${req.method} - ${req.ip}`)
+      console.log(`${value} downloaded`)
+      res.sendFile(value)
+    })
   })
-})
+}
 
 app.listen(port, async() => {
   const url = getUrl(networkInfo, networkInterface, port)
