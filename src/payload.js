@@ -3,7 +3,7 @@ const fs = require("node:fs")
 const { fromPairs, mapValues } = require('lodash')
 
 const getAndValidatePayloadValue = (relativePath) => {
-  const absolutePath = path.resolve(__dirname, relativePath)
+  const absolutePath = path.resolve(__dirname, '..', relativePath)
   const stat = fs.statSync(absolutePath)
   if (!stat.isFile()) {
     throw new Error(`Payload ${relativePath} is not a file`)
