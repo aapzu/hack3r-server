@@ -48,7 +48,7 @@ if (payloadObj) {
   Object.entries(payloadObj).forEach(([key, value]) => {
     app.get(`/${key}`, (req, res) => {
       console.log(`\n${new Date().toLocaleString()} – ${req.method} - ${req.ip}`)
-      console.log(`${value} downloaded`)
+      console.log(`${value} downloaded, url: ${req.url}`)
       res.sendFile(value)
     })
   })
