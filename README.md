@@ -1,4 +1,4 @@
-# hack_server
+# hack3r_server
 
 A small project which helps debugging remote connections
 

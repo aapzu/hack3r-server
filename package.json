@@ -1,9 +1,10 @@
 {
-  "name": "@aapzu/hack_server",
-  "version": "0.0.1",
+  "name": "@aapzu/hack3r-server",
+  "version": "1.0.0",
   "description": "😈",
   "main": "src/index.mts",
   "bin": "dist/index.mjs",
+  "access": "public",
   "scripts": {
     "start": "tsx src/index.mts",
     "build": "tsc"
