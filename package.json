@@ -1,6 +1,6 @@
 {
   "name": "@aapzu/hack_server",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "😈",
   "main": "src/index.mts",
   "bin": "dist/index.mjs",
