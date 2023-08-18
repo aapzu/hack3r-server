@@ -2,6 +2,7 @@ import express from 'express';
 import yargs from 'yargs';
 import getPayloadObject from './payload.mjs';
 import getNetworkInfo from './getNetworkInfo.mjs';
+import cors from 'cors';
 
 const getUrl = (networkInfo: { [key: string]: any }, networkInterface: string, port: number) => {
   return `http://${networkInfo[networkInterface].inet}:${port}`;
@@ -35,6 +36,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 app.all('/', (req, res) => {
   const data = req.query.data && decodeURI(req.query.data as string);
