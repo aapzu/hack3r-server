@@ -4,8 +4,12 @@ import getPayloadObject from './payload.mjs';
 import getNetworkInfo from './getNetworkInfo.mjs';
 import cors from 'cors';
 
-const getUrl = (networkInfo: { [key: string]: any }, networkInterface: string, port: number) => {
-  return `http://${networkInfo[networkInterface].inet}:${port}`;
+const getUrl = (port: number, networkInfo: { [key: string]: any }, networkInterface: string) => {
+  let host = 'localhost';
+  if (networkInterface) {
+    host = networkInfo[networkInterface].inet;
+  }
+  return `http://${host}:${port}`;
 };
 
 const networkInfo = getNetworkInfo();
@@ -15,7 +19,6 @@ const { port, networkInterface, payload } = await yargs(process.argv.slice(2))
     alias: 'n',
     type: 'string',
     description: 'The network interface to use',
-    demandOption: true,
     choices: Object.keys(networkInfo),
   })
   .option('port', {
@@ -56,10 +59,14 @@ if (payloadObj) {
 }
 
 app.listen(port, async () => {
-  const url = getUrl(networkInfo, networkInterface, port);
+  const url = getUrl(port, networkInfo, networkInterface);
 
   console.log(`Hack server started on port ${port} 😈`);
-  console.log(`Available in ${networkInterface} interface in ${url}`);
+  if (networkInterface) {
+    console.log(`Available in ${networkInterface} interface in ${url}`);
+  } else {
+    console.log(`Available in ${url}`);
+  }
   if (payloadObj) {
     console.log(
       `Payloads: ${Object.entries(payloadObj)
