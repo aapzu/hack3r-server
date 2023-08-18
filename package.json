@@ -2,10 +2,11 @@
   "name": "@aapzu/hack_server",
   "version": "0.0.1",
   "description": "😈",
-  "main": "src/index.js",
-  "bin": "src/index.js",
+  "main": "src/index.mts",
+  "bin": "dist/index.mjs",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "tsx src/index.mts",
+    "build": "tsc"
   },
   "author": {
     "name": "Aapeli Haanpuu",
@@ -14,7 +15,13 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
-    "lodash": "^4.17.21",
+    "ramda": "^0.29.0",
+    "tsx": "^3.12.7",
+    "typescript": "^5.1.6",
     "yargs": "^17.6.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/ramda": "^0.29.3"
   }
 }

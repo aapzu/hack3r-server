@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "NodeNext",
+    "outDir": "./dist",
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "strict": true,
+    "strictNullChecks": true
+  }
+}
