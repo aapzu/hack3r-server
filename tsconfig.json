@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "NodeNext",
+    "target": "ES2017",
+    "module": "ESNext",
+    "moduleResolution": "node",
     "outDir": "./dist",
     "sourceMap": true,
     "experimentalDecorators": true,
@@ -10,9 +11,11 @@
     "isolatedModules": true,
     "importsNotUsedAsValues": "error",
     "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true
   },
   "ts-node": {
-    "swc": true
+    "swc": true,
+    "esm": true
   }
 }

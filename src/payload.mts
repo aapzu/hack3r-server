@@ -1,32 +1,47 @@
 import path from 'path';
 import fs from 'fs';
-import { fromPairs, mapObjIndexed } from 'ramda';
+import { fromPairs, map, mapObjIndexed } from 'ramda'
+import { z } from 'zod'
 
 const getAndValidatePayloadValue = (relativePath: string): string => {
-  const absolutePath = path.resolve(__dirname, '..', relativePath);
-  const stat = fs.statSync(absolutePath);
+  const absolutePath = path.resolve(__dirname, '..', relativePath)
+  const stat = fs.statSync(absolutePath)
   if (!stat.isFile()) {
-    throw new Error(`Payload ${relativePath} is not a file`);
+    throw new Error(`Payload ${relativePath} is not a file`)
   }
-  return absolutePath;
-};
+  return absolutePath
+}
 
-const getPayloadObject = (payload: unknown) => {
-  if (!payload) {
-    return undefined;
-  }
-  if (typeof payload === 'string') {
-    return { [path.basename(payload)]: getAndValidatePayloadValue(payload) };
-  }
-  if (Array.isArray(payload)) {
-    return fromPairs(payload.map(value =>
-      [path.basename(value), getAndValidatePayloadValue(value)]
-    ));
-  }
-  if (typeof payload === 'object') {
-    return mapObjIndexed(value => getAndValidatePayloadValue(value), payload);
-  }
-  throw new Error(`Invalid payload, type: ${typeof payload}, value: ${JSON.stringify(payload)}`);
-};
+const getStringPayload = (payloadFileName: string): Record<string, string> => ({
+  [path.basename(payloadFileName)]: getAndValidatePayloadValue(payloadFileName),
+})
+
+const getArrayPayload = (payloadFileNames: string[]): Record<string, string> =>
+  fromPairs(
+    map(
+      (value) => [path.basename(value), getAndValidatePayloadValue(value)],
+      payloadFileNames
+    )
+  )
+
+const getObjectPayload = (
+  payload: Record<string, string>
+): Record<string, string> =>
+  mapObjIndexed((value) => getAndValidatePayloadValue(value), payload)
+
+const stringPayloadSchema = z.string().transform(getStringPayload)
+const arrayPayloadSchema = z.array(z.string()).transform(getArrayPayload)
+const objectPayloadSchema = z.record(z.string()).transform(getObjectPayload)
+const payloadSchema = z.union([
+  stringPayloadSchema,
+  arrayPayloadSchema,
+  objectPayloadSchema,
+])
+
+const getPayloadObject = (
+  payload: string | string[] | Record<string, string> | unknown
+): Record<string, string> => {
+  return payloadSchema.parse(payload)
+}
 
 export default getPayloadObject;
