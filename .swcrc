@@ -6,7 +6,10 @@
       "dynamicImport": false,
       "decorators": true
     },
-    "target": "esnext"
+    "target": "es5"
+  },
+  "module": {
+    "type": "es6"
   },
   "minify": true
 }
