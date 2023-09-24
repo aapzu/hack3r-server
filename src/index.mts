@@ -1,16 +1,17 @@
 import express from 'express';
 import yargs from 'yargs';
 import getPayloadObject from './payload.mts'
-import getNetworkInfo from './getNetworkInfo.mts'
-import cors from 'cors';
+import cors from 'cors'
+import { networkInterfaces } from 'os'
+import ngrok from '@ngrok/ngrok'
+import type * as http from 'http'
 
-const getUrl = (
-  port: number,
-  networkInfo: { [key: string]: { inet: string } },
-  networkInterface: string | undefined
-) => {
+const networkInfo = networkInterfaces()
+type TNetworkInterface = keyof typeof networkInfo
+
+const getUrl = (port: number, networkInterface?: TNetworkInterface) => {
   const host = networkInterface
-    ? networkInfo[networkInterface].inet
+    ? networkInfo[networkInterface]?.[0].address
     : 'localhost'
 
   return `http://${host}:${port}`
@@ -18,7 +19,7 @@ const getUrl = (
 
 type TStartServerArgs = {
   port: number
-  networkInterface: string | undefined
+  networkInterface: TNetworkInterface | undefined
   payload: string | string[] | Record<string, string> | unknown
 }
 
@@ -26,7 +27,7 @@ const startServer = async ({
   port,
   networkInterface,
   payload,
-}: TStartServerArgs) => {
+}: TStartServerArgs): Promise<http.Server> => {
   const payloadObj = payload && getPayloadObject(payload)
 
   const app = express()
@@ -54,26 +55,33 @@ const startServer = async ({
     })
   }
 
-  app.listen(port, async () => {
-    const url = getUrl(port, networkInfo, networkInterface)
+  return new Promise((resolve) => {
+    const server = app.listen(port, async () => {
+      const url = getUrl(port, networkInterface)
 
-    console.log(`Hack server started on port ${port} 😈`)
-    if (networkInterface) {
-      console.log(`Available in ${networkInterface} interface in ${url}`)
-    } else {
-      console.log(`Available in ${url}`)
-    }
-    if (payloadObj) {
-      console.log(
-        `Payloads: ${Object.entries(payloadObj)
-          .map(([key, value]) => `\n\t${url}/${key}\t–\t${value}`)
-          .join('')}`
-      )
-    }
+      if (payloadObj) {
+        console.log(
+          `Payloads: ${Object.entries(payloadObj)
+            .map(([key, value]) => `\n\t${url}/${key}\t–\t${value}`)
+            .join('')}`
+        )
+      }
+      resolve(server)
+    })
   })
 }
 
-const networkInfo = await getNetworkInfo()
+type TNgrokOptions = {
+  authtoken?: string
+}
+
+const exposeServer = async (port: number, ngrokOptions: TNgrokOptions = {}) => {
+  ngrok.connect({
+    addr: port,
+    authtoken_from_env: true,
+    authtoken: ngrokOptions.authtoken,
+  })
+}
 
 yargs(process.argv.slice(2))
   .command(
@@ -96,9 +104,31 @@ yargs(process.argv.slice(2))
         .option('payload', {
           alias: 'l',
           description: 'Payload file (array, object or string) to serve',
+        })
+        .option('ngrok', {
+          alias: 'g',
+          type: 'boolean',
+          description: 'Use ngrok to expose the server',
+        })
+        .options('ngrok-authtoken', {
+          alias: 't',
+          type: 'string',
+          description: 'ngrok authtoken',
         }),
     async (args) => {
       await startServer(args)
+      const url = getUrl(args.port, args.networkInterface)
+      console.log(`Hack server started on port ${args.port} 😈`)
+      if (args.networkInterface) {
+        console.log(`Available in ${args.networkInterface} interface in ${url}`)
+      } else {
+        console.log(`Available in ${url}`)
+      }
+      if (args.ngrok) {
+        await exposeServer(args.port, {
+          authtoken: args['ngrok-authtoken'],
+        })
+      }
     }
   )
   .parse()
