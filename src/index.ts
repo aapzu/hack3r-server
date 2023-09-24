@@ -1,6 +1,6 @@
-import express from 'express';
-import yargs from 'yargs';
-import getPayloadObject from './payload.mts'
+import express from 'express'
+import yargs from 'yargs'
+import getPayloadObject from './payload'
 import cors from 'cors'
 import { networkInterfaces } from 'os'
 import ngrok from '@ngrok/ngrok'

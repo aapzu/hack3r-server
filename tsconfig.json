@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
-    "module": "ESNext",
+    "target": "ES6",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "outDir": "./dist",
     "sourceMap": true,
@@ -9,13 +9,9 @@
     "strict": true,
     "strictNullChecks": true,
     "isolatedModules": true,
-    "importsNotUsedAsValues": "error",
-    "esModuleInterop": true,
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true
+    "esModuleInterop": true
   },
   "ts-node": {
-    "swc": true,
     "esm": true
   }
 }
