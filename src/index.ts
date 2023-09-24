@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import express from 'express'
 import yargs from 'yargs'
 import getPayloadObject from './payload'
