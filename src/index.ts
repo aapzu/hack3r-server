@@ -77,11 +77,12 @@ type TNgrokOptions = {
 }
 
 const exposeServer = async (port: number, ngrokOptions: TNgrokOptions = {}) => {
-  ngrok.connect({
+  const url = await ngrok.connect({
     addr: port,
     authtoken_from_env: true,
     authtoken: ngrokOptions.authtoken,
   })
+  console.log(`Server exposed in ${url}`)
 }
 
 yargs(process.argv.slice(2))
