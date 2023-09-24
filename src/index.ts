@@ -74,6 +74,7 @@ const startServer = async ({
 
 type TNgrokOptions = {
   authtoken?: string
+  subdomain?: string
 }
 
 const exposeServer = async (port: number, ngrokOptions: TNgrokOptions = {}) => {
@@ -81,11 +82,13 @@ const exposeServer = async (port: number, ngrokOptions: TNgrokOptions = {}) => {
     addr: port,
     authtoken_from_env: true,
     authtoken: ngrokOptions.authtoken,
+    subdomain: ngrokOptions.subdomain,
   })
   console.log(`Server exposed in ${url}`)
 }
 
 yargs(process.argv.slice(2))
+  .scriptName('hack3r-server')
   .command(
     '$0',
     'Starts a server to receive data from the hack',
@@ -116,6 +119,11 @@ yargs(process.argv.slice(2))
           alias: 't',
           type: 'string',
           description: 'ngrok authtoken',
+        })
+        .options('ngrok-subdomain', {
+          alias: 's',
+          type: 'string',
+          description: 'ngrok subdomain',
         }),
     async (args) => {
       await startServer(args)
@@ -129,6 +137,7 @@ yargs(process.argv.slice(2))
       if (args.ngrok) {
         await exposeServer(args.port, {
           authtoken: args['ngrok-authtoken'],
+          subdomain: args['ngrok-subdomain'],
         })
       }
     }
