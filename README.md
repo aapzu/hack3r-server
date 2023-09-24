@@ -3,8 +3,6 @@
 A small project which helps debugging remote connections
 
 ```
-hack3r-server
-
 Starts a server to receive data from the hack
 
 Options:
