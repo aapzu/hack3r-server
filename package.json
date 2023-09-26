@@ -1,6 +1,6 @@
 {
   "name": "@aapzu/hack3r-server",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "😈",
   "main": "src/index.mts",
   "bin": {
