@@ -20,6 +20,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
+          registry-url: https://registry.npmjs.org/
       - name: Install
         run: pnpm install --frozen-lockfile
       - name: Build
@@ -28,3 +29,7 @@ jobs:
         uses: ncipollo/release-action@v1.13.0
         with:
           artifacts: 'dist/*'
+      - name: Publish to NPM
+        run: pnpm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
