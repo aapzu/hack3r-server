@@ -12,7 +12,7 @@ type TNetworkInterface = keyof typeof networkInfo
 
 const getUrl = (port: number, networkInterface?: TNetworkInterface) => {
   const host = networkInterface
-    ? networkInfo[networkInterface]?.[0].address
+    ? networkInfo[networkInterface]?.[0]?.address
     : 'localhost'
 
   return `http://${host}:${port}`
@@ -38,7 +38,7 @@ const startServer = async ({
   app.use(cors())
 
   app.all('/', (req, res) => {
-    const data = req.query.data && decodeURI(req.query.data as string)
+    const data = req.query['data'] && decodeURI(req.query['data'] as string)
     console.log(`\n${new Date().toLocaleString()} – ${req.method} - ${req.ip}`)
     console.log(data || "No 'data' query parameter given")
     res.sendStatus(200)
@@ -77,7 +77,7 @@ type TNgrokOptions = {
   subdomain?: string
 }
 
-const exposeServer = async (port: number, ngrokOptions: TNgrokOptions = {}) => {
+const exposeServer = async (port: number, ngrokOptions: Required<TNgrokOptions>) => {
   const url = await ngrok.connect({
     addr: port,
     authtoken_from_env: true,
@@ -134,7 +134,7 @@ yargs(process.argv.slice(2))
       } else {
         console.log(`Available in ${url}`)
       }
-      if (args.ngrok) {
+      if (args.ngrok && args['ngrok-authtoken'] && args['ngrok-subdomain']) {
         await exposeServer(args.port, {
           authtoken: args['ngrok-authtoken'],
           subdomain: args['ngrok-subdomain'],
