@@ -1,5 +1,5 @@
-import path from 'path';
-import fs from 'fs';
+import path from 'path'
+import fs from 'fs'
 import { fromPairs, map, mapObjIndexed } from 'ramda'
 import { z } from 'zod'
 
@@ -44,4 +44,4 @@ const getPayloadObject = (
   return payloadSchema.parse(payload)
 }
 
-export default getPayloadObject;
+export default getPayloadObject

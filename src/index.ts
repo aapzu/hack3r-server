@@ -77,7 +77,10 @@ type TNgrokOptions = {
   subdomain?: string
 }
 
-const exposeServer = async (port: number, ngrokOptions: Required<TNgrokOptions>) => {
+const exposeServer = async (
+  port: number,
+  ngrokOptions: Required<TNgrokOptions>
+) => {
   const url = await ngrok.connect({
     addr: port,
     authtoken_from_env: true,
