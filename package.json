@@ -6,6 +6,7 @@
   "bin": "dist/index.js",
   "scripts": {
     "start": "tsx src/index.mts",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "build": "tsup"
   },
