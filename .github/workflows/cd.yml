@@ -1,24 +1,30 @@
-name: deploy
+name: CD
 on:
   push:
-    tags:
-      - '*'
+    tags: 
+      - 'v*'
+env:
+  NODE_VERSION: 22.0.0
+  PNPM_VERSION: 8.13.1
 jobs:
-  build_and_publish:
+  ci:
+    uses: './.github/workflows/ci.yml'
+  release:
+    needs: ci
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18]
     steps:
+      - name: Exit if not on master branch
+        if: endsWith(github.ref, 'main') == false
+        run: exit 0
       - name: Checkout repository
         uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
         with:
-          version: 8
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+          version: ${{ env.PNPM_VERSION }}
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
           registry-url: https://registry.npmjs.org/
       - name: Install
