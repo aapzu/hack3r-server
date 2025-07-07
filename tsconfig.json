@@ -22,6 +22,6 @@
     "noPropertyAccessFromIndexSignature": true,
     "noEmit": true,
     "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
   }
 }
