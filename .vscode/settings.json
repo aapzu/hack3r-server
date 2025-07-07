@@ -1,0 +1,6 @@
+{
+  "prettier.configPath": ".prettierrc.json",
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true
+}
