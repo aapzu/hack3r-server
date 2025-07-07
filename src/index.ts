@@ -1,11 +1,11 @@
 #!/usr/bin/env node
+import type * as http from 'node:http'
+import { networkInterfaces } from 'node:os'
+import ngrok from '@ngrok/ngrok'
+import cors from 'cors'
 import express from 'express'
 import yargs from 'yargs'
 import getPayloadObject from './payload'
-import cors from 'cors'
-import { networkInterfaces } from 'os'
-import ngrok from '@ngrok/ngrok'
-import type * as http from 'http'
 
 const networkInfo = networkInterfaces()
 type TNetworkInterface = keyof typeof networkInfo
@@ -38,7 +38,7 @@ const startServer = async ({
   app.use(cors())
 
   app.all('/', (req, res) => {
-    const data = req.query['data'] && decodeURI(req.query['data'] as string)
+    const data = req.query.data && decodeURI(req.query.data as string)
     console.log(`\n${new Date().toLocaleString()} – ${req.method} - ${req.ip}`)
     console.log(data || "No 'data' query parameter given")
     res.sendStatus(200)
